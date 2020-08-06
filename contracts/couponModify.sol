@@ -7,7 +7,6 @@ contract couponModify{
     mapping(uint => Inventory) public coupons;
     mapping(address => uint) public ownerAccounts;
     mapping(address => bool)internal hasSigned;
-    mapping(string => Inventory) public Searched_Coupons;
     uint idcoupon=0;
     
     struct Inventory{
@@ -20,7 +19,7 @@ contract couponModify{
     
     Inventory[] internal coupon;
     address[] internal couponAccts;
-    //address[] internal Searched_Coupons;
+    address[] internal Avaliable_Coupons;
     
     modifier isSigned(){
         require (hasSigned[msg.sender] == true, "User does not  have an account");
@@ -80,19 +79,20 @@ contract couponModify{
         
     }
     
-    /*function Search() internal isSigned{
-        uint _id;
-        Inventory storage new_search = Searched_Coupons[_id];
+    function getSearchAll() external isSigned{
         for(uint i=0; i<idcoupon; i++){
             if (Avaliable[coupons[i].couponAddress] == true){
-                Searched_Coupons.push(coupons[i].couponAddress);         
+                Avaliable_Coupons.push(coupons[i].couponAddress);         
             }    
         }
         
-    }*/
+    }
     
+     function showSearchAll () view external isSigned returns (address[] memory){
+              
+        return Avaliable_Coupons;
+    }
     
-
     function getInventory ()  external isSigned  {
         
         for(uint i=0; i<idcoupon; i++){
@@ -106,19 +106,7 @@ contract couponModify{
               
         return couponAccts;
     }
-    
-   /* function Search(string calldata _keyword) external isSigned {
-        string storage _key = _keyword;
-        for(uint i=0; i<idcoupon; i++){
-               
-            if(coupons[i].keyword ==_key){
-                
-            }
-        }
         
-    }*/
-    
-    
     function Buy (uint _id) external payable isSigned{
         require(msg.sender != coupons[_id].owner,  "You are Not the owner");
         require(ownerAccounts[msg.sender] >= coupons[_id].value,  "Unsufficient Funds");
