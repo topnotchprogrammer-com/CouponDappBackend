@@ -3,14 +3,14 @@ pragma solidity >0.5.2;
 contract couponModify{
  
    
-    mapping(address => bool)internal Avaliable;
+    mapping(bytes32 => bool)internal Avaliable;
     mapping(uint => Inventory) public coupons;
     mapping(address => uint) public ownerAccounts;
     mapping(address => bool)internal hasSigned;
     uint idcoupon=0;
     
     struct Inventory{
-        address couponAddress;
+        bytes32 couponAddress;
         uint value;                 //price of coupon 
         address payable owner;
         string keyword;
@@ -18,8 +18,8 @@ contract couponModify{
     
     
     Inventory[] internal coupon;
-    address[] internal couponAccts;
-    address[] internal Avaliable_Coupons;
+    bytes32[] internal couponAccts;
+    bytes32[] internal Avaliable_Coupons;
     
     modifier isSigned(){
         require (hasSigned[msg.sender] == true, "User does not  have an account");
@@ -33,9 +33,7 @@ contract couponModify{
     }
    
    function checkAccount () view external returns (bool){
-        require (hasSigned[msg.sender] == true, "You don't have an account.");
         return(hasSigned[msg.sender]);
-       
    }
    
     function deposit () external payable isSigned {
@@ -46,7 +44,7 @@ contract couponModify{
         msg.sender.transfer(msg.value);
     }
     
-     function addNew(address _couponAddress, string calldata _keyword) external isSigned  {
+     function addNew(bytes32 _couponAddress, string calldata _keyword) external isSigned  {
         Inventory storage new_coupon = coupons[idcoupon];
         new_coupon.couponAddress = _couponAddress;
         new_coupon.value = 0;
@@ -60,19 +58,19 @@ contract couponModify{
     }
     
     
-    function UseCoupon (uint _id) external isSigned {
+    function useCoupon (uint _id) external isSigned {
         require(msg.sender == coupons[_id].owner);
         delete coupons[_id];
             idcoupon--; 
         
     }
     
-    function Remove_from_Market (uint _id) external isSigned{
+    function removeFromMarket (uint _id) external isSigned{
         require(msg.sender == coupons[_id].owner);
         Avaliable[coupons[_id].couponAddress]=false;
     }
     
-    function Add_to_Market (uint _id) external payable isSigned{
+    function addToMarket (uint _id) external payable isSigned{
         require(msg.sender == coupons[_id].owner);
         coupons[_id].value = msg.value;
         Avaliable[coupons[_id].couponAddress]=true;
@@ -88,7 +86,7 @@ contract couponModify{
         
     }
     
-     function showSearchAll () view external isSigned returns (address[] memory){
+     function showSearchAll () view external isSigned returns (bytes32[] memory){
               
         return Avaliable_Coupons;
     }
@@ -102,7 +100,7 @@ contract couponModify{
         }
     }
     
-    function showInventory () view external isSigned returns (address[] memory){
+    function showInventory () view external isSigned returns (bytes32[] memory){
               
         return couponAccts;
     }
