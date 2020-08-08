@@ -5,14 +5,14 @@ pragma solidity >0.5.2;
 contract couponModify{
  
    
-    mapping(bytes32 => bool)internal Avaliable;
+    mapping(bytes => bool)internal Avaliable;
     mapping(uint => Inventory) public coupons;
     mapping(address => uint) public ownerAccounts;
     mapping(address => bool)internal hasSigned;
     uint idcoupon=0;
     
     struct Inventory{
-        bytes32 couponAddress;
+        bytes couponAddress;
         uint value;                 //price of coupon 
         address payable owner;
         string keyword;
@@ -46,7 +46,7 @@ contract couponModify{
         msg.sender.transfer(msg.value);
     }
     
-     function addNew(bytes32 _couponAddress, string calldata _keyword) external isSigned  {
+     function addNew(bytes calldata _couponAddress, string calldata _keyword) external isSigned  {
         Inventory storage new_coupon = coupons[idcoupon];
         new_coupon.couponAddress = _couponAddress;
         new_coupon.value = 0;
