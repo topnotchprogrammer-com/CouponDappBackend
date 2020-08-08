@@ -1,3 +1,5 @@
+pragma experimental ABIEncoderV2; 
+
 pragma solidity >0.5.2;
 
 contract couponModify{
@@ -18,8 +20,8 @@ contract couponModify{
     
     
     Inventory[] internal coupon;
-    bytes32[] internal couponAccts;
-    bytes32[] internal Avaliable_Coupons;
+    Inventory[] internal couponAccts;
+    Inventory[] internal Avaliable_Coupons;
     
     modifier isSigned(){
         require (hasSigned[msg.sender] == true, "User does not  have an account");
@@ -80,13 +82,13 @@ contract couponModify{
     function getSearchAll() external isSigned{
         for(uint i=0; i<idcoupon; i++){
             if (Avaliable[coupons[i].couponAddress] == true){
-                Avaliable_Coupons.push(coupons[i].couponAddress);         
+                Avaliable_Coupons.push(coupons[i]);         
             }    
         }
         
     }
     
-     function showSearchAll () view external isSigned returns (bytes32[] memory){
+     function showSearchAll () view external isSigned returns (Inventory[] memory){
               
         return Avaliable_Coupons;
     }
@@ -95,12 +97,12 @@ contract couponModify{
         
         for(uint i=0; i<idcoupon; i++){
             if (coupons[i].owner == msg.sender){
-                couponAccts.push(coupons[i].couponAddress);         
+                couponAccts.push(coupons[i]);         
             }    
         }
     }
     
-    function showInventory () view external isSigned returns (bytes32[] memory){
+    function showInventory () view external isSigned returns (Inventory[] memory){
               
         return couponAccts;
     }
